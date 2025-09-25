@@ -112,7 +112,27 @@
       <div id="formMessage" class="success" aria-live="polite"></div>
 
       <div class="divider"></div>
+      
+      <!-- // This client id is a default id, but we can access it -->
+      <div id="g_id_onload"
+     data-client_id="114450138530374012772" 
+     data-context="signin"
+     data-callback="onGoogleSignIn"
+     data-auto_prompt="false">
+</div>
+
+<div class="g_id_signin"
+     data-type="standard"
+     data-shape="rectangular"
+     data-theme="outline"
+     data-text="signin_with"
+     data-size="large"
+     data-logo_alignment="left">
+</div>
+
       <p class="footer">No account? <a class="link" href="register.html">Create one</a></p>
+
+      
     </form>
   </main>
 
@@ -163,12 +183,41 @@
 
       if (!ok) return;
 
-      // Pretend success
-      formMessage.textContent = 'Signed in! Redirecting to your profile…';
-      setTimeout(() => {
-        window.location.href = 'profile.html';
-      }, 800);
+// Pretend success
+const profile = {
+  email: email.value.trim(),
+  name: email.value.trim().split('@')[0],
+  google: false
+};
+localStorage.setItem('currentUser', JSON.stringify(profile));
+
+formMessage.textContent = 'Signed in! Redirecting to your profile…';
+setTimeout(() => {
+  window.location.href = 'profile.html';
+}, 800);
+
     });
   </script>
+<!-- google sign in -->
+  <script>
+  function onGoogleSignIn(response) {
+    const credential = response.credential;
+    const payload = JSON.parse(atob(credential.split('.')[1]));
+
+    const profile = {
+      email: payload.email,
+      name: payload.name || payload.email.split('@')[0],
+      google: true
+    };
+
+    localStorage.setItem('currentUser', JSON.stringify(profile));
+
+    document.getElementById('formMessage').textContent = 'Google login successful! Redirecting...';
+    setTimeout(() => {
+      window.location.href = 'profile.html';
+    }, 800);
+  }
+</script>
+
 </body>
 </html>
